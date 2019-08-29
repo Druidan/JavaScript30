@@ -58,16 +58,53 @@
 
     .hand {
       width: 50%;
-      height: 6px;
-      background: black;
       position: absolute;
       top: 50%;
+      border-top-left-radius: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+
+    .hour-hand {
+      background: red;
+      height: 7px;
+      width: 35%;
+      left: 15%;
+    }
+
+    .min-hand {
+      background: black;
+      height: 5px;
+    }
+
+    .second-hand {
+      background: white;
+      height: 4px;
     }
 
   </style>
 
   <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minuteHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
 
+    function setDate() {
+      const now = new Date();
+      const second = now.getSeconds();
+      const minute = now.getMinutes();
+      const hour = now.getHours();
+      const secondsDegrees = ((second / 60) * 360) + 90;
+      const minDegrees = ((minute / 60) * 360) + 90;
+      const hourDegrees = ((hour / 24) * 360) + 90;
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      minuteHand.style.transform = `rotate(${minDegrees}deg)`;
+      hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
 
   </script>
 </body>
