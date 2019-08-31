@@ -96,6 +96,90 @@
   </div>
 
 <script>
+  const inputArray = Array.from(document.querySelectorAll('input'));
+  let shiftDown = false;
+  let indexOfChecked = null;
+  let indexOfShiftChecked = null;
+
+  function checked(e) {
+    if(this.checked && !shiftDown){
+      indexOfChecked = inputArray.indexOf(this);
+    } else if(this.checked && shiftDown) {
+      indexOfShiftChecked = inputArray.indexOf(this);
+      selectBetween();
+    }
+    q(shiftDown)
+  }
+
+  function shiftDownCheck(e) {
+    if(e.keyCode === 16 && !shiftDown) {
+      shiftDown = true;
+    }
+  }
+
+  function shiftUpCheck(e) {
+    if(e.keyCode === 16 && shiftDown) {
+      shiftDown = false;
+    }
+  }
+
+  function selectBetween() {
+    const boxesToCheck = inputArray.filter(input => (inputArray.indexOf(input) >= indexOfChecked && inputArray.indexOf(input) <= indexOfShiftChecked));
+    const checkedBoxes = boxesToCheck.map(input => input.checked = true);
+  }
+
+  const listeningInputArray = inputArray.map(input => input.addEventListener('change', checked));
+  // q(listeningInputArray)
+  // q(inputArray);
+
+document.addEventListener('keydown', shiftDownCheck);
+document.addEventListener('keyup', shiftUpCheck);
+
+
+
+  function q (check, style, trace) {
+    let mytype;
+    switch (true) {
+        case typeof check === 'string':
+            mytype = 'String';
+            break;
+        case Number.isInteger(check):
+            mytype = 'Integer';
+            break;
+        case typeof check === 'boolean':
+            mytype = 'Boolean'
+            break;
+        case check instanceof Array:
+            mytype = 'Array';
+            break;
+        case typeof check === "function":
+            mytype = 'Function';
+            break;
+        case check instanceof Date:
+            mytype = 'Date';
+            break;
+        case check instanceof Object:
+            mytype = 'Object';
+            break;
+        default:
+            mytype = '...Odd Bit?'
+            break;
+    };
+    console.log(`Q: This ${mytype} has a value of:`);
+    if (arguments.length >= 2 && (typeof check === 'string' || check instanceof String) && style !== (undefined || null ) && typeof style !== 'boolean') {
+        check = `%c ${check}`
+        console.log(check, style);
+    } else {
+        if(mytype === 'Array') { console.table(check); } 
+        else { console.log(check); };
+    };
+    if ((arguments.length >= 2 && typeof style === 'boolean') || trace) { 
+        console.log('%c Trace Your Steps Below... ', 'font-size:15px; color: Cornsilk; background: DarkOliveGreen;') 
+        console.trace(check) 
+    }
+    if (mytype !== 'Integer') { console.assert(check, "That's not true! That's impossible!"); }
+    
+};
 </script>
 </body>
 </html>
