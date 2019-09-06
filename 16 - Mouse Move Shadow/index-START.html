@@ -35,6 +35,96 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+  const walk = 300; // 500px
+
+function shadow(e) {
+  const { offsetWidth: width, offsetHeight: height} = hero;
+  let { offsetX: x, offsetY: y } = e;
+  if(this !== e.target) {
+    x = x + e.target.offsetLeft;
+    y = y+ e.target.offsetTop;
+  };
+  const xWalk = ~~((x / width * walk) - (walk / 2));
+  const yWalk = ~~((y / width * walk) - (walk / 2));
+  text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 red,
+      ${xWalk * -1}px ${yWalk}px 0 blue,
+      ${yWalk}px ${xWalk * -1}px 0 green,
+      ${yWalk * -1}px ${xWalk}px 0 yellow
+    `;
+}
+
+
+  // Listeners
+  hero.addEventListener('mousemove', shadow);
+
+
+
+
+
+
+
+// Faster way to write log, but less performant. Development only.
+function l () {
+  const args = [...arguments];
+  console.log(args);
+}
+
+  // Multipurpose check function.
+function q (check, style, trace) {
+    let mytype;
+    switch (true) {
+        case typeof check === 'string':
+            mytype = 'String';
+            break;
+        case Number.isInteger(check):
+            mytype = 'Integer';
+            break;
+        case typeof check === 'boolean':
+            mytype = 'Boolean'
+            break;
+        case check instanceof Array:
+            mytype = 'Array';
+            break;
+        case typeof check === "function":
+            mytype = 'Function';
+            break;
+        case check instanceof Date:
+            mytype = 'Date';
+            break;
+        case check instanceof Object:
+            mytype = 'Object';
+            break;
+        default:
+            mytype = '...Odd Bit?'
+            break;
+    };
+    console.log(`Q: This ${mytype} has a value of:`);
+    if (arguments.length >= 2 && (typeof check === 'string' || check instanceof String) && style !== (undefined || null ) && typeof style !== 'boolean') {
+        check = `%c ${check}`
+        console.log(check, style);
+    } else {
+        if(mytype === 'Array') { console.table(check); } 
+        else { console.log(check); };
+    };
+    if ((arguments.length >= 2 && typeof style === 'boolean') || trace) { 
+        console.log('%c Trace Your Steps Below... ', 'font-size:15px; color: Cornsilk; background: DarkOliveGreen;') 
+        console.trace(check) 
+    }
+    if (mytype !== 'Integer') { console.assert(check, "That's not true! That's impossible!"); }
+};
+
+// A fast and simple way to log strings or arrays of strings.
+function say () {
+    const args = [...arguments];
+    if (args.length === 1) { console.log(`Message: ${args[0]}`); } 
+    else {
+        let i = 1;
+        args.forEach(arg => { console.log(`Message ${i}: ${arg}`); i++; });
+    };
+};
 </script>
 </body>
 </html>
