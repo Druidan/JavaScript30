@@ -46,8 +46,100 @@
   <ul id="bands"></ul>
 
 <script>
+
+const domBandsList = document.querySelector('#bands');
 const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+// Sort the bands alphabetically, ignoring "The" or "A" in the title.
+// My original sort. NOTE: Din't Actually work! Just pushed the bands with the RegEx to the bottom of the list. Didn't realize till later!
+// const sortedBands = bands.sort( (a, b) => {
+//   const aName = a.replace(/The |A |An /g).trim();
+//   const bName = b.replace(/The |A |An /g).trim();
+//   if (aName > bName) { return 1} else { return -1};
+// });
+
+// Wes Bos Sort
+function stripArticles(bandName) {
+  return bandName.replace(/^(a |the |an )/gi, '').trim();
+}
+const sortedBands = bands.sort( (a, b) => stripArticles(a) > stripArticles(b) ? 1 : -1 );
+
+q(sortedBands);
+
+// Append the bands to the "bands" list on the page.
+domBandsList.innerHTML = sortedBands
+  .map( band => `<li>${band}</li>`)
+  .join('');
+
+q(domBandsList)
+
+
+
+
+
+// Faster way to write log, but less performant. Development only.
+function l () {
+    const args = [...arguments];
+    console.log(args);
+}
+
+// Multipurpose check function. Not performant. Ideal for singular diagnosis, not rapid logging.
+function q (check, style, trace) {
+    let mytype;
+    function l () {
+      const args = [...arguments];
+      console.log(args);
+    }
+    switch (true) {
+        case typeof check === 'string':
+            mytype = 'String';
+            break;
+        case Number.isInteger(check):
+            mytype = 'Integer';
+            break;
+        case typeof check === 'boolean':
+            mytype = 'Boolean'
+            break;
+        case check instanceof Array:
+            mytype = 'Array';
+            break;
+        case typeof check === "function":
+            mytype = 'Function';
+            break;
+        case check instanceof Date:
+            mytype = 'Date';
+            break;
+        case check instanceof Object:
+            mytype = 'Object';
+            break;
+        default:
+            mytype = '...Odd Bit?'
+            break;
+    };
+    console.log(`Q: This ${mytype} has a value of:`);
+    if (arguments.length >= 2 && (typeof check === 'string' || check instanceof String) && style !== (undefined || null ) && typeof style !== 'boolean') {
+        check = `%c ${check}`
+        console.log(check, style);
+    } else {
+        if(mytype === 'Array') { console.table(check); } 
+        else { console.log(check); l(check) };
+    };
+    if ((arguments.length >= 2 && typeof style === 'boolean') || trace) { 
+        console.log('%c Trace Your Steps Below... ', 'font-size:15px; color: Cornsilk; background: DarkOliveGreen;') 
+        console.trace(check) 
+    }
+    if (mytype !== 'Integer') { console.assert(check, "That's not true! That's impossible!"); }
+};
+
+// A fast and simple way to log strings or arrays of strings.
+function say () {
+    const args = [...arguments];
+    if (args.length === 1) { console.log(`Message: ${args[0]}`); } 
+    else {
+        let i = 1;
+        args.forEach(arg => { console.log(`Message ${i}: ${arg}`); i++; });
+    };
+};
 
 </script>
 
