@@ -188,16 +188,19 @@ const timeNodes = [...document.querySelectorAll("[data-time]")];
 const seconds = timeNodes
   .map(node => node.dataset.time)
   .map(timeCode => {
-    const [mins, secs] = timeCode.split(":").map(parseFloat);
+    const [mins, secs] = timeCode.split(':').map(parseFloat);
     return (mins * 60) + secs;
   })
   .reduce((total, vidSeconds) => total + vidSeconds);
 
   let secondsLeft = seconds;
-  const hours = ~~(secondsLeft / 3600);
+  const hours = Math.floor(secondsLeft / 3600);
   secondsLeft = secondsLeft % 3600;
 
-q(hours);
+  const mins = Math.floor(secondsLeft / 60);
+  secondsLeft = secondsLeft % 60;
+
+  q(hours, mins, secondsLeft);
 
 
 
@@ -206,54 +209,58 @@ q(hours);
 
 
 
-
+// Faster way to write log, but less performant. Development only.
+function l () {
+    const args = [...arguments];
+    console.log(args);
+}
 
 // Multipurpose check function. Not performant. Ideal for singular diagnosis, not rapid logging.
 function q (check, style, trace) {
-    function l () {
-        const args = [...arguments];
-        console.log(args);
-    }
-    let mytype;
-    switch (true) {
-        case typeof check === 'string':
-            mytype = 'String';
-            break;
-        case Number.isInteger(check):
-            mytype = 'Integer';
-            break;
-        case typeof check === 'boolean':
-            mytype = 'Boolean'
-            break;
-        case check instanceof Array:
-            mytype = 'Array';
-            break;
-        case typeof check === "function":
-            mytype = 'Function';
-            break;
-        case check instanceof Date:
-            mytype = 'Date';
-            break;
-        case check instanceof Object:
-            mytype = 'Object';
-            break;
-        default:
-            mytype = '...Odd Bit?'
-            break;
-    };
-    console.log(`Q: This ${mytype} has a value of:`);
-    if (arguments.length >= 2 && (typeof check === 'string' || check instanceof String) && style !== (undefined || null ) && typeof style !== 'boolean') {
-        check = `%c ${check}`
-        console.log(check, style);
-    } else {
-        if(mytype === 'Array') { console.table(check); } 
-        else { console.log(check); l(check) };
-    };
-    if ((arguments.length >= 2 && typeof style === 'boolean') || trace) { 
-        console.log('%c Trace Your Steps Below... ', 'font-size:15px; color: Cornsilk; background: DarkOliveGreen;') 
-        console.trace(check) 
-    }
-    if (mytype !== 'Integer') { console.assert(check, "That's not true! That's impossible!"); }
+  const args = [...arguments];
+  function l (args) {
+      console.log(args);
+  }
+  let mytype;
+  switch (true) {
+      case typeof check === 'string':
+          mytype = 'String';
+          break;
+      case Number.isInteger(check):
+          mytype = 'Integer';
+          break;
+      case typeof check === 'boolean':
+          mytype = 'Boolean'
+          break;
+      case check instanceof Array:
+          mytype = 'Array';
+          break;
+      case typeof check === "function":
+          mytype = 'Function';
+          break;
+      case check instanceof Date:
+          mytype = 'Date';
+          break;
+      case check instanceof Object:
+          mytype = 'Object';
+          break;
+      default:
+          mytype = '...Odd Bit?'
+          break;
+  };
+  console.log(`Q: This ${mytype} has a value of:`);
+  if (arguments.length >= 2 && (typeof check === 'string' || check instanceof String) && style !== (undefined || null ) && typeof style !== 'boolean') {
+      check = `%c ${check}`
+      console.log(check, style);
+  } else {
+      if(mytype === 'Array') { console.table(check); } 
+      else { console.log(check); l(args) };
+  };
+  if ((arguments.length >= 2 && typeof style === 'boolean') || trace === true) { 
+      console.log('%c Trace Your Steps Below... ', 'font-size:15px; color: Cornsilk; background: DarkOliveGreen;') 
+      console.trace(check) 
+  }
+  if (mytype !== 'Integer') { console.assert(check, "That's not true! That's impossible!"); }
 };
 </script>
 </body>
